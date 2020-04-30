@@ -38,7 +38,7 @@ public:
         for (size_t i = itr;; i++) {
             if (isspace(buffer[i])) {
                 buffer[i] = 0;
-                int64_t ans = atoll(&buffer[itr], i);
+                int64_t ans = atoll(&buffer[itr]);
                 itr = i + 1;
                 return ans;
             }
