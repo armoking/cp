@@ -1,14 +1,15 @@
 class BufferedReader {
 private:
-    const static int BUFFER_SIZE = 1 << 18;
-    int index = BUFFER_SIZE;
+    const static int BUFFER_SIZE = 25e5;
+    int index = 0;
     char buffer[BUFFER_SIZE];
     void getBuffer() {
-        index = 0;
         fread(buffer, 1, BUFFER_SIZE, stdin);
+        index = 0;
     }
 public:
     BufferedReader() {
+        memset(buffer, 0, sizeof buffer);
         getBuffer();
     }
     inline char getChar() {
@@ -20,11 +21,24 @@ public:
     inline string readString() {
         string ans;
         static char ch;
-        while (isspace(ch = getChar()));
+        while (isspace(ch)) ch = getChar();
         while (!isspace(ch)) {
             ans.push_back(ch), ch = getChar();
         }
         return ans;
+    }
+    inline long long readLong() {
+        long long ans = 0;
+        char neg = false, ch = getChar();
+        while (isspace(ch)) ch = getChar();
+        if (ch == '-') {
+            neg = true, ch = getChar();
+        }
+        while (!isspace(ch)) {
+            ans = (ans * 10) + (ch - '0');
+            ch = getChar();
+        }
+        return neg ? -ans : ans;
     }
     inline int readInt() {
         int ans = 0;
@@ -39,24 +53,11 @@ public:
         }
         return neg ? -ans : ans;
     }
-    inline long long readLong() {
-        long long ans = 0;
-        static char neg, ch;
-        neg = false;
-        while (isspace(ch = getChar()));
-        if (ch == '-') {
-            neg = true, ch = getChar();
-        }
-        while (!isspace(ch)) {
-            ans = (ans * 10) + (ch - '0'), ch = getChar();
-        }
-        return neg ? -ans : ans;
-    }
     inline double readDouble() {
         double ans = 0;
         static char neg, ch, sep;
         neg = sep = 0;
-        while (isspace(ch = getChar()));
+        while (isspace(ch)) ch = getChar();
         if (ch == '-') {
             neg = true, ch = getChar();
         }
@@ -76,7 +77,7 @@ public:
  
 class BufferedWriter {
 private:
-    static const int BUFFER_SIZE = 1 << 18;
+    static const int BUFFER_SIZE = 25e5;
     char buffer[BUFFER_SIZE];
     int index = 0;
  
