@@ -1,79 +1,108 @@
-template<int BUFFER_SIZE>
-class BufferedInput {
+class BufferedReader {
 private:
+    const static int BUFFER_SIZE = 1 << 18;
+    int index = BUFFER_SIZE;
     char buffer[BUFFER_SIZE];
-    size_t itr = 0;
-public:
-    BufferedInput() {
+    void getBuffer() {
+        index = 0;
         fread(buffer, 1, BUFFER_SIZE, stdin);
     }
-    string readString() {
-        while (isspace(buffer[itr])) itr++;
-        string result = "";
-        for (size_t i = itr;; i++) {
-            if (isspace(buffer[i])) {
-                buffer[i] = 0;
-                result = string(&buffer[itr]);
-                itr = i + 1;
-                break;
-            }
-        }
-        if (result.size() == 0) return readString();
-        return result;
+public:
+    BufferedReader() {
+        getBuffer();
     }
-    int32_t readInt() {
-        while (isspace(buffer[itr])) itr++;
-        for (size_t i = itr;; i++) {
-            if (isspace(buffer[i])) {
-                buffer[i] = 0;
-                int ans = atoi(&buffer[itr]);
-                itr = i + 1;
-                return ans;
-            }
+    inline char getChar() {
+        if (index == BUFFER_SIZE) {
+            getBuffer();
         }
-        return readInt();
+        return buffer[index++];
     }
-    int64_t readLong() {
-        while (isspace(buffer[itr])) itr++;
-        for (size_t i = itr;; i++) {
-            if (isspace(buffer[i])) {
-                buffer[i] = 0;
-                int64_t ans = atoll(&buffer[itr]);
-                itr = i + 1;
-                return ans;
-            }
+    inline string readString() {
+        string ans;
+        static char ch;
+        while (isspace(ch = getChar()));
+        while (!isspace(ch)) {
+            ans.push_back(ch), ch = getChar();
         }
-        return readLong();
+        return ans;
+    }
+    inline int readInt() {
+        int ans = 0;
+        char neg = false, ch = getChar();
+        while (isspace(ch)) ch = getChar();
+        if (ch == '-') {
+            neg = true, ch = getChar();
+        }
+        while (!isspace(ch)) {
+            ans = (ans * 10) + (ch - '0');
+            ch = getChar();
+        }
+        return neg ? -ans : ans;
+    }
+    inline long long readLong() {
+        long long ans = 0;
+        static char neg, ch;
+        neg = false;
+        while (isspace(ch = getChar()));
+        if (ch == '-') {
+            neg = true, ch = getChar();
+        }
+        while (!isspace(ch)) {
+            ans = (ans * 10) + (ch - '0'), ch = getChar();
+        }
+        return neg ? -ans : ans;
+    }
+    inline double readDouble() {
+        double ans = 0;
+        static char neg, ch, sep;
+        neg = sep = 0;
+        while (isspace(ch = getChar()));
+        if (ch == '-') {
+            neg = true, ch = getChar();
+        }
+        while (!isspace(ch)) {
+            if (ch == '.') {
+                sep++;
+            } else {
+                ans = (ans * 10) + ch - '0';
+                sep += sep > 0;
+            }
+            ch = getChar();
+        }
+        ans /= pow(10, sep - 1);
+        return neg ? -ans : ans;
     }
 };
-
-template<int BUFFER_SIZE>
-class BufferedOutput {
+ 
+class BufferedWriter {
 private:
+    static const int BUFFER_SIZE = 1 << 18;
     char buffer[BUFFER_SIZE];
-    size_t len = 0;
+    int index = 0;
+ 
 public:
-    ~BufferedOutput() {
+    BufferedWriter() {
+        memset(buffer, 0, sizeof buffer);
+    }
+    ~BufferedWriter() {
         flush();
     }
-    void flush() {
-        fwrite(buffer, 1, len, stdout);
-        len = 0;
+    inline void flush() {
+        fwrite(buffer, 1, index, stdout), index = 0;
     }
-    void print(const string& s) {
-        memcpy(&buffer[len], &s[0], s.size());
-        len += s.size();
+    inline void putChar(char x) {
+        if (index == BUFFER_SIZE) {
+            flush();
+        }
+        buffer[index++] = x;
     }
-    void print(char ch) {
-        buffer[len++] = ch;
-    }
-    void println(const string& s) {
-        print(s), print('\n');
+    inline void print(const string& s) {
+        for (char ch : s) putChar(ch);
     }
     template<typename T> void print(const T& x) {
         print(to_string(x));
     }
     template<typename T> void println(const T& x) {
-        println(to_string(x));
+        print(x), putChar('\n');
     }
 };
