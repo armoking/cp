@@ -64,7 +64,7 @@ public:
         memcpy(&buffer[len], &s[0], s.size());
         len += s.size();
     }
-    void print(const char& ch) {
+    void print(char ch) {
         buffer[len++] = ch;
     }
     void println(const string& s) {
