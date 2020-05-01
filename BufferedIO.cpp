@@ -19,9 +19,10 @@ public:
         return buffer[index++];
     }
     inline string readString() {
-        string ans;
+        string ans = "";
         static char ch;
-        while (isspace(ch)) ch = getChar();
+        ch = getChar();
+        while (isspace(ch) || ch == 0) ch = getChar();
         while (!isspace(ch)) {
             ans.push_back(ch), ch = getChar();
         }
@@ -74,13 +75,13 @@ public:
         return neg ? -ans : ans;
     }
 };
- 
+
 class BufferedWriter {
 private:
     static const int BUFFER_SIZE = 25e5;
     char buffer[BUFFER_SIZE];
     int index = 0;
- 
+
 public:
     BufferedWriter() {
         memset(buffer, 0, sizeof buffer);
@@ -91,19 +92,26 @@ public:
     inline void flush() {
         fwrite(buffer, 1, index, stdout), index = 0;
     }
-    inline void putChar(char x) {
+    inline void print(char x) {
         if (index == BUFFER_SIZE) {
             flush();
         }
         buffer[index++] = x;
     }
     inline void print(const string& s) {
-        for (char ch : s) putChar(ch);
+        for (char ch : s) print(ch);
     }
     template<typename T> void print(const T& x) {
         print(to_string(x));
     }
     template<typename T> void println(const T& x) {
-        print(x), putChar('\n');
+        print(x), print('\n');
+    }
+    template<typename TBegin, typename TEnd> void print(TBegin a, TEnd b, string sep = " ") {
+        auto it = a;
+        while (it != b) {
+            print(*it++);
+            print(sep);
+        }
     }
 };
