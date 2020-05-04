@@ -3,6 +3,6 @@
 class TKek {
 public:
     TKek(int x) {
-        printf("%d\n", x * x);
+        printf("%0.3f\n", x * x * 0.5);
     }
 };
