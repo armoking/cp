@@ -1,2 +1,2 @@
-# cp
-This is possession of Armoking The Great!
+# Repo for cp solutions and algos
+
