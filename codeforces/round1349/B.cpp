@@ -15,11 +15,16 @@ int main() {
         cin >> n >> k;
         vector<int> a(n);
         set<int> ind;
+        int cnt = 0;
         for (int i = 0; i < n; i++) {
             cin >> a[i];
-            if (a[i] == k) {
+            if (a[i] >= k) {
                 ind.insert(i);
+                if (a[i] == k) {
+                    cnt++;
+                }
             }
+
             a[i] = a[i] >= k ? 1 : -1;
             if (i) a[i] += a[i - 1];
         }
@@ -38,7 +43,8 @@ int main() {
                 break;
             }
         }
-        contains |= ind.size() == n;
+        contains |= cnt == n;
+        contains &= cnt > 0;
         cout << (contains ? "yes\n" : "no\n");
     }
 }
