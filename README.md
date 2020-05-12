@@ -1,2 +1,2 @@
-# Repo for cp solutions and algos. v2
+# Repo for cp solutions and algos.
 
