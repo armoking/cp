@@ -28,18 +28,6 @@ int main() {
             mx[i] = max(mx[i], mx[i + 1]);
         }
         bool contains = false;
-        for (int i = 0; i < n; i++) {
-            cout << a[i] << ' ';
-        }
-        cout << '\n';
-        for (int i = 0; i < n; i++) {
-            cout << mx[i] << ' ';
-        }
-        cout << '\n';
-        for (int val : ind) {
-            cout << val << ' ';
-        }
-        cout << '\n';
         for (int i = 0; i + 1 < n; i++) {
             auto it = ind.lower_bound(i);
             if (it == ind.end()) break;
