@@ -55,7 +55,7 @@ private:
         vector<TData> data(n);
         for (int i = 0; i < n; i++) {
             for (auto& edge : g[i]) {
-                if (edge.to == parent[0][i]) {
+                if (edge.to == parent[i]) {
                     data[i] = edge.w;
                 }
             }
