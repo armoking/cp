@@ -6,7 +6,7 @@ using namespace std;
 using ll = long long;
 
 template<typename TKey, typename TValue, int TABLE_SIZE = 1024 /* should be power of two */,
-        int MAXN = 1024 /* max amount of elements */, TValue VALUE_BY_DEFAULT = 0>
+         int MAXN = 1024 /* max amount of elements */, TValue VALUE_BY_DEFAULT = 0>
 class THashMap {
 private:
     std::pair<TKey, TValue> buffer[MAXN];
@@ -25,7 +25,7 @@ private:
 public:
     THashMap()
         : indexes(MAXN)
-    {   
+    {
         std::iota(std::begin(indexes), std::end(indexes), 0);
         for (int i = 0; i < MAXN; i++) {
             buffer[i].second = VALUE_BY_DEFAULT;

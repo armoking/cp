@@ -1,6 +1,6 @@
 #include <bits/stdc++.h>
 #define all(x) begin(x),end(x)
- 
+
 void InitIO(std::string name = "") {
     using namespace std;
     ios_base::sync_with_stdio(false);
@@ -11,13 +11,13 @@ void InitIO(std::string name = "") {
         freopen((name + ".out").c_str(), "w", stdout);
     }
 }
- 
+
 using namespace std;
- 
+
 void setmax(string& a, const string& b) {
     if (a < b) a = b;
 }
- 
+
 int main() {
     InitIO("");
     int n, k;
@@ -43,16 +43,16 @@ int main() {
         }
         digits.push_back(val);
     }
- 
-    #define sz(x) __builtin_popcount(x)
- 
+
+#define sz(x) __builtin_popcount(x)
+
     vector<vector<bool>> dp(n + 1, vector<bool>(k + 1, false));
     vector<vector<pair<int,int>>> from(n + 1, vector<pair<int,int>>(k + 1, {-1, -1}));
     dp[0][k] = true;
- 
+
     reverse(all(arr));
- 
- 
+
+
     for (int i = 0; i < n; i++) {
         int ni = i + 1;
         for (int rem = 0; rem <= k; rem++) {

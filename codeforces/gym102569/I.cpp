@@ -1,9 +1,9 @@
 #include <bits/stdc++.h>
 #define all(x) begin(x), end(x)
- 
+
 using namespace std;
 using ll = long long;
- 
+
 void InitIO(string name = "") {
     ios_base::sync_with_stdio(false);
     cin.tie(nullptr);
@@ -13,15 +13,15 @@ void InitIO(string name = "") {
         assert(freopen((name + ".out").c_str(), "w", stdout));
     }
 }
- 
+
 void setmin(int& a, int b) {
     if (a > b) a = b;
 }
 void setmax(int& a, int b) {
     if (a < b) a = b;
 }
- 
- 
+
+
 int main() {
     InitIO();
     int n;

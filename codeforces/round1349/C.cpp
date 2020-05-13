@@ -27,7 +27,7 @@ int main() {
     };
     const int inf = 1e9;
     vector<int> depth(n * m, inf);
-    
+
     queue<int> q;
     for (int i = 0; i < n; i++) {
         for (int j = 0; j < m; j++) {
@@ -47,7 +47,7 @@ int main() {
         }
     }
 
-    
+
     while (q.size()) {
         auto v = q.front();
         q.pop();
@@ -64,7 +64,7 @@ int main() {
             }
         }
     }
-    
+
     while (t--) {
         int x, y;
         cin >> x >> y;

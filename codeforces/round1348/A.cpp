@@ -1,9 +1,9 @@
 #include <bits/stdc++.h>
 #define all(x) begin(x), end(x)
- 
+
 using namespace std;
 using ll = long long;
- 
+
 class BufferedReader {
 private:
     const static int BUFFER_SIZE = 25e5;
@@ -81,13 +81,13 @@ public:
         return neg ? -ans : ans;
     }
 };
- 
+
 class BufferedWriter {
 private:
     static const int BUFFER_SIZE = 25e5;
     char buffer[BUFFER_SIZE];
     int index = 0;
- 
+
 public:
     BufferedWriter() {
         memset(buffer, 0, sizeof buffer);
@@ -114,9 +114,9 @@ public:
         print(x), putChar('\n');
     }
 };
- 
- 
- 
+
+
+
 int main() {
     BufferedReader in;
     BufferedWriter out;
