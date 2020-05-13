@@ -50,7 +50,7 @@ private:
         index += leaf;
     }
 
-    vector<TData> GetData() {
+    vector<TData> GetData(const vector<TData>& inputData) {
 #if EDGES
         vector<TData> data(n);
         for (int i = 0; i < n; i++) {
@@ -62,7 +62,7 @@ private:
         }
         return data;
 #else
-        return vector<TData>(n, 0);
+        return inputData;
 #endif
     }
 
@@ -71,7 +71,7 @@ private:
     }
 
 public:
-    THLD(vector<vector<TEdge>>& g, int root = 0)
+    THLD(vector<vector<TEdge>>& g, const vector<TData>& data = {}, int root = 0)
         : n(g.size())
         , g(g)
         , parent(n)
@@ -83,7 +83,7 @@ public:
         BuildDfs(root, root);
         int index = 0;
         BuildWays(root, index);
-        rmq = TRMQ(GetData());
+        rmq = TRMQ(GetData(data));
     }
 
     void Update(int a, int b, TData value) {
