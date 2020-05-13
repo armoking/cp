@@ -3,62 +3,51 @@ class THld {
 private:
     int n;
     vector<vector<Edge>>& g;
-    vector<vector<int>> parent;
+    vector<int> parent;
     vector<int> indexOfWay;
     vector<int> indexInPath;
     vector<int> path;
-    vector<int> beginOfPath;
+    vector<int> beginOfWay;
     vector<int> depth;
-    vector<int> tin;
-    vector<int> tout;
-    int timer = 0;
     RMQ rmq;
 
     int BuildDfs(int from, int par, int d = 0) {
-        parent[0][from] = par;
-        tin[from] = timer++;
-        for (int i = 1; i < int(parent.size()); i++) {
-            parent[i][from] = parent[i - 1][parent[i - 1][from]];
-        }
         depth[from] = d;
+        parent[from] = par;
         int tsize = 1;
         int child = -1;
         int maxSize = 0;
         for (int i = 0; i < int(g[from].size()); i++) {
-            if (g[from][i].to == par) {
-                continue;
-            }
-            int currentSize = BuildDfs(g[from][i].to, from, d + 1);
-            tsize += currentSize;
-            if (maxSize < currentSize) {
-                maxSize = currentSize;
-                child = i;
+            if (g[from][i].to != par) {
+                int currentSize = BuildDfs(g[from][i].to, from, d + 1);
+                tsize += currentSize;
+                if (maxSize < currentSize) {
+                    maxSize = currentSize;
+                    child = i;
+                }
             }
         }
         if (child != -1) {
             swap(g[from][0], g[from][child]);
         }
-        tout[from] = timer++;
         return tsize;
     }
 
     void BuildWays(int from, int& index) {
         indexOfWay[from] = index;
-        if (beginOfPath[index] == -1) {
-            beginOfPath[index] = from;
+        if (beginOfWay[index] == -1) {
+            beginOfWay[index] = from;
         }
         indexInPath[from] = path.size();
         path.push_back(from);
-        if (g[from].size() == 0 || (g[from].size() == 1 && g[from][0].to == parent[0][from])) {
-            index++;
-            return;
-        }
+        bool leaf = true;
         for (int i = 0; i < int(g[from].size()); i++) {
-            if (g[from][i].to == parent[0][from]) {
-                continue;
+            if (g[from][i].to != parent[from]) {
+                BuildWays(g[from][i].to, index);
+                leaf = false;
             }
-            BuildWays(g[from][i].to, index);
         }
+        index += leaf;
     }
 
     vector<TData> GetData() {
@@ -77,17 +66,19 @@ private:
 #endif
     }
 
+    int Head(int v) {
+        return beginOfWay[indexOfWay[v]];
+    }
+
 public:
     THld(vector<vector<Edge>>& g, int root = 0)
         : n(g.size())
         , g(g)
-        , parent(int(log2(n) + 1), vector<int>(n))
-        , indexOfWay(n, -1)
-        , indexInPath(n, -1)
-        , beginOfPath(n, -1)
-        , depth(n, 1)
-        , tin(n)
-        , tout(n)
+        , parent(n)
+        , indexOfWay(n)
+        , indexInPath(n)
+        , beginOfWay(n, -1)
+        , depth(n)
     {
         BuildDfs(root, root);
         int index = 0;
@@ -96,21 +87,13 @@ public:
     }
 
     void Update(int a, int b, TData value) {
-        int c = LCA(a, b);
-
-        while (indexOfWay[a] != indexOfWay[c]) {
-            int head = beginOfPath[indexOfWay[a]];
-            rmq.Update(indexInPath[head], indexInPath[a], value);
-            a = parent[0][head];
+        while (indexOfWay[a] != indexOfWay[b]) {
+            if (depth[Head(a)] < depth[Head(b)]) swap(a, b);
+            rmq.Update(indexInPath[Head(a)], indexInPath[a], value);
+            a = parent[Head(a)];
         }
-        rmq.Update(indexInPath[c] + 1, indexInPath[a], value);
-
-        while (indexOfWay[b] != indexOfWay[c]) {
-            int head = beginOfPath[indexOfWay[b]];
-            rmq.Update(indexInPath[head], indexInPath[b], value);
-            b = parent[0][head];
-        }
-        rmq.Update(indexInPath[c] + EDGES, indexInPath[b], value);
+        if (depth[a] < depth[b]) swap(a, b);
+        rmq.Update(indexInPath[b] + EDGES, indexInPath[a], value);
     }
 
     void Update(int v, TData value) {
@@ -119,46 +102,17 @@ public:
 
     TData Get(int a, int b) {
         TData answer = 0;
-        int c = LCA(a, b);
-
-        while (indexOfWay[a] != indexOfWay[c]) {
-            int head = beginOfPath[indexOfWay[a]];
-            answer = RMQ::UpdateValue(answer, rmq.Get(indexInPath[head], indexInPath[a]));
-            a = parent[0][head];
+        while (indexOfWay[a] != indexOfWay[b]) {
+            if (depth[Head(a)] < depth[Head(b)]) swap(a, b);
+            answer = RMQ::UpdateValue(answer, rmq.Get(indexInPath[Head(a)], indexInPath[a]));
+            a = parent[Head(a)];
         }
-        answer = RMQ::UpdateValue(answer, rmq.Get(indexInPath[c] + 1, indexInPath[a]));
-
-        while (indexOfWay[b] != indexOfWay[c]) {
-            int head = beginOfPath[indexOfWay[b]];
-            answer = RMQ::UpdateValue(answer, rmq.Get(indexInPath[head], indexInPath[b]));
-            b = parent[0][head];
-        }
-        answer = RMQ::UpdateValue(answer, rmq.Get(indexInPath[c] + EDGES, indexInPath[b]));
-
+        if (depth[a] < depth[b]) swap(a, b);
+        answer = RMQ::UpdateValue(answer, rmq.Get(indexInPath[b] + EDGES, indexInPath[a]));
         return answer;
     }
 
     TData Get(int v) {
         return rmq.Get(indexInPath[v]);
-    }
-
-    int LCA(int a, int b) {
-        if (depth[a] < depth[b]) swap(a, b);
-        if (tin[a] >= tin[b] && tout[a] <= tout[b]) {
-            return b;
-        }
-        for (int i = int(size(parent)) - 1; i >= 0; i--) {
-            if (depth[parent[i][a]] >= depth[b]) {
-                a = parent[i][a];
-            }
-        }
-        if (a == b) return a;
-        for (int i = int(size(parent)) - 1; i >= 0; i--) {
-            if (parent[i][a] != parent[i][b]) {
-                a = parent[i][a];
-                b = parent[i][b];
-            }
-        }
-        return parent[0][a];
     }
 };

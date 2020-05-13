@@ -1,9 +1,9 @@
 #include <bits/stdc++.h>
 #define all(x) begin(x), end(x)
- 
+
 using namespace std;
 using ll = long long;
- 
+
 void InitIO(string name = "") {
     ios_base::sync_with_stdio(false);
     cin.tie(nullptr);
@@ -13,7 +13,7 @@ void InitIO(string name = "") {
         assert(freopen((name + ".out").c_str(), "w", stdout));
     }
 }
- 
+
 int slv(vector<int> a, int n, int t) {
     int ans = 0;
     int tmp = -1;
@@ -48,8 +48,8 @@ int slv(vector<int> a, int n, int t) {
     }
     return ans;
 }
- 
- 
+
+
 int main() {
     InitIO();
     int n;

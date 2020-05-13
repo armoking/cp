@@ -24,7 +24,7 @@ ll fastPow(ll a, ll p) {
     return ans;
 }
 
-struct SegmentTree { 
+struct SegmentTree {
     vector<vector<pair<int,ll>>> t;
     vector<vector<ll>> pref;
     SegmentTree(int n, vector<vector<int>> data) : t(n * 4), pref(n * 4) {
@@ -65,7 +65,7 @@ struct SegmentTree {
             Build(v * 2 + 1, tl, tm, arr, from, to);
             Build(v * 2 + 2, tm, tr, arr, from, to);
             merge(all(t[v * 2 + 1]), all(t[v * 2 + 2]), back_inserter(t[v]));
-            while (t[v].back().first > tl) t[v].pop_back(); 
+            while (t[v].back().first > tl) t[v].pop_back();
             t[v].shrink_to_fit();
         }
         pref[v].resize(t[v].size());
@@ -76,7 +76,7 @@ struct SegmentTree {
             }
         }
     }
-    
+
     ll Get(int v, int tl, int tr, int l, int r) {
         if (tl >= r || tr <= l) return 1;
         if (tl >= l && tr <= r) {
@@ -122,7 +122,7 @@ int main() {
             revpref[i] = (revpref[i - 1] * revpref[i]) % mod;
         }
     }
-    
+
     vector<ll> primes;
     vector<bool> eq(int(1e6 + 1));
     for (int i = 2; i <= 1e6; i++) {
@@ -142,7 +142,7 @@ int main() {
         l--, r--;
         queries.push_back({l, r});
     }
-    
+
     vector<vector<int>> data(n);
     for (int i = 0; i < n; i++) {
         for (int j = 0; j < primes.size(); j++) {
@@ -152,23 +152,23 @@ int main() {
             if (a[i] % primes[j]) continue;
             data[i].push_back(primes[j]);
             while (a[i] % primes[j] == 0) {
-                a[i] /= primes[j];    
+                a[i] /= primes[j];
             }
-        }    
+        }
         if (a[i] > 1) {
             data[i].push_back(a[i]);
         }
     }
     SegmentTree tree(n, data);
-    
+
     vector<ll> ans(q);
     for (int i = 0; i < q; i++) {
         auto& [l, r] = queries[i];
         ans[i] = pref[r] * (l ? revpref[l - 1] : 1) % mod;
-        
+
         ll value = tree.Get(0, 0, n, l, r + 1);
         ans[i] = (ans[i] * value) % mod;
         cout << ans[i] << '\n';
     }
-    
+
 }

@@ -1,9 +1,9 @@
 #include <bits/stdc++.h>
 #define all(x) begin(x), end(x)
- 
+
 using namespace std;
 using ll = long long;
- 
+
 void InitIO(string name = "") {
     ios_base::sync_with_stdio(false);
     cin.tie(nullptr);
@@ -13,12 +13,12 @@ void InitIO(string name = "") {
         assert(freopen((name + ".out").c_str(), "w", stdout));
     }
 }
- 
+
 mt19937 rnd(1423);
 const int N = 1000;
 int p[N];
 map<pair<int,int>, int> cmp;
- 
+
 int ask(int a, int b) {
     if (cmp.count({a, b})) {
         return cmp[make_pair(a, b)];
@@ -34,7 +34,7 @@ int ask(int a, int b) {
     }
     return cmp[make_pair(a, b)] = cur;
 }
- 
+
 void Solve(vector<int> a, vector<int> b) {
     assert(a.size() == b.size());
     if (a.size() == 0) return;
@@ -69,7 +69,7 @@ void Solve(vector<int> a, vector<int> b) {
     Solve(a1, firstHalf);
     Solve(a2, secondHalf);
 }
- 
+
 int main() {
     InitIO();
     int n;
