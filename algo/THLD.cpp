@@ -1,15 +1,15 @@
-template<typename TData, typename RMQ, typename Edge, bool EDGES = false>
-class THld {
+template<typename TData, typename TRMQ, typename TEdge, bool EDGES = false>
+class THLD {
 private:
     int n;
-    vector<vector<Edge>>& g;
+    vector<vector<TEdge>>& g;
     vector<int> parent;
     vector<int> indexOfWay;
     vector<int> indexInPath;
     vector<int> path;
     vector<int> beginOfWay;
     vector<int> depth;
-    RMQ rmq;
+    TRMQ rmq;
 
     int BuildDfs(int from, int par, int d = 0) {
         depth[from] = d;
@@ -71,7 +71,7 @@ private:
     }
 
 public:
-    THld(vector<vector<Edge>>& g, int root = 0)
+    THLD(vector<vector<TEdge>>& g, int root = 0)
         : n(g.size())
         , g(g)
         , parent(n)
@@ -83,7 +83,7 @@ public:
         BuildDfs(root, root);
         int index = 0;
         BuildWays(root, index);
-        rmq = RMQ(GetData());
+        rmq = TRMQ(GetData());
     }
 
     void Update(int a, int b, TData value) {
@@ -104,11 +104,11 @@ public:
         TData answer = 0;
         while (indexOfWay[a] != indexOfWay[b]) {
             if (depth[Head(a)] < depth[Head(b)]) swap(a, b);
-            answer = RMQ::UpdateValue(answer, rmq.Get(indexInPath[Head(a)], indexInPath[a]));
+            answer = TRMQ::UpdateValue(answer, rmq.Get(indexInPath[Head(a)], indexInPath[a]));
             a = parent[Head(a)];
         }
         if (depth[a] < depth[b]) swap(a, b);
-        answer = RMQ::UpdateValue(answer, rmq.Get(indexInPath[b] + EDGES, indexInPath[a]));
+        answer = TRMQ::UpdateValue(answer, rmq.Get(indexInPath[b] + EDGES, indexInPath[a]));
         return answer;
     }
 

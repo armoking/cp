@@ -7,18 +7,18 @@ template<typename T> int size(T& x) {
     return x.size();
 }
 
-template<typename TData, typename RMQ, typename Edge, bool EDGES = false>
-class THld {
+template<typename TData, typename TRMQ, typename TEdge, bool EDGES = false>
+class THLD {
 private:
     int n;
-    vector<vector<Edge>>& g;
+    vector<vector<TEdge>>& g;
     vector<int> parent;
     vector<int> indexOfWay;
     vector<int> indexInPath;
     vector<int> path;
     vector<int> beginOfWay;
     vector<int> depth;
-    RMQ rmq;
+    TRMQ rmq;
 
     int BuildDfs(int from, int par, int d = 0) {
         depth[from] = d;
@@ -80,7 +80,7 @@ private:
     }
 
 public:
-    THld(vector<vector<Edge>>& g, int root = 0)
+    THLD(vector<vector<TEdge>>& g, int root = 0)
         : n(g.size())
         , g(g)
         , parent(n)
@@ -92,7 +92,7 @@ public:
         BuildDfs(root, root);
         int index = 0;
         BuildWays(root, index);
-        rmq = RMQ(GetData());
+        rmq = TRMQ(GetData());
     }
 
     void Update(int a, int b, TData value) {
@@ -113,11 +113,11 @@ public:
         TData answer = 0;
         while (indexOfWay[a] != indexOfWay[b]) {
             if (depth[Head(a)] < depth[Head(b)]) swap(a, b);
-            answer = RMQ::UpdateValue(answer, rmq.Get(indexInPath[Head(a)], indexInPath[a]));
+            answer = TRMQ::UpdateValue(answer, rmq.Get(indexInPath[Head(a)], indexInPath[a]));
             a = parent[Head(a)];
         }
         if (depth[a] < depth[b]) swap(a, b);
-        answer = RMQ::UpdateValue(answer, rmq.Get(indexInPath[b] + EDGES, indexInPath[a]));
+        answer = TRMQ::UpdateValue(answer, rmq.Get(indexInPath[b] + EDGES, indexInPath[a]));
         return answer;
     }
 
@@ -126,15 +126,17 @@ public:
     }
 };
 
-struct Edge {
+class TEdge {
+public:
     int to;
 };
 
-struct SegmentTree {
+class TSegmentTree {
+private:
     int n;
     vector<int> t;
-
-    SegmentTree(const vector<int>& data = {})
+public:
+    TSegmentTree(const vector<int>& data = {})
         : n(data.size())
         , t(n * 2, 0)
     {}
@@ -166,15 +168,15 @@ int main() {
     cout.tie(nullptr);
     int n;
     cin >> n;
-    vector<vector<Edge>> graph(n);
+    vector<vector<TEdge>> graph(n);
     for (int i = 0; i < n - 1; i++) {
         int f, t;
         cin >> f >> t;
         f--, t--;
-        graph[f].push_back(Edge{t});
-        graph[t].push_back(Edge{f});
+        graph[f].push_back({t});
+        graph[t].push_back({f});
     }
-    THld<int, SegmentTree, Edge> hld(graph, 0);
+    THLD<int, TSegmentTree, TEdge> hld(graph, 0);
     int q;
     cin >> q;
     while (q--) {
