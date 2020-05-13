@@ -1,3 +1,12 @@
+#include <bits/stdc++.h>
+#define all(x) begin(x),end(x)
+
+using namespace std;
+using ll = long long;
+template<typename T> int size(T& x) {
+    return x.size();
+}
+
 template<typename TData, typename RMQ, typename Edge, bool EDGES = false>
 class THld {
 private:
@@ -162,3 +171,68 @@ public:
         return parent[0][a];
     }
 };
+
+struct Edge {
+    int to;
+};
+
+struct SegmentTree {
+    int n;
+    vector<int> t;
+
+    SegmentTree(const vector<int>& data = {})
+        : n(data.size())
+        , t(n * 2, 0)
+    {
+        assert(accumulate(all(data), 0) == 0);
+    }
+
+    void Update(int v, int val) {
+        for (t[v += n] += val; v > 1; v >>= 1) {
+            t[v >> 1] = UpdateValue(t[v], t[v ^ 1]);
+        }
+    }
+
+    int Get(int l, int r) {
+        int ans = 0;
+        for (l += n, r += n + 1; l < r; l >>= 1, r >>= 1) {
+            if (l & 1) ans = UpdateValue(ans, t[l++]);
+            if (r & 1) ans = UpdateValue(ans, t[--r]);
+        }
+        return ans;
+    }
+
+    static int UpdateValue(int a, int b) {
+        return max(a, b);
+    }
+};
+
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(nullptr);
+    cout.tie(nullptr);
+    int n;
+    cin >> n;
+    vector<vector<Edge>> graph(n);
+    for (int i = 0; i < n - 1; i++) {
+        int f, t;
+        cin >> f >> t;
+        f--, t--;
+        graph[f].push_back(Edge{t});
+        graph[t].push_back(Edge{f});
+    }
+    THld<int, SegmentTree, Edge> hld(graph, 0);
+    int q;
+    cin >> q;
+    while (q--) {
+        char type;
+        int a, b;
+        cin >> type >> a >> b;
+        if (type == 'I') {
+            hld.Update(a - 1, b);
+        } else {
+            cout << hld.Get(a - 1, b - 1) << '\n';
+        }
+    }
+}
