@@ -93,6 +93,10 @@ struct FastSet {
         return lower_bound3(index, N + (1ULL << bit3));
     }
 
+    size_t upper_bound(size_t index) {
+        return lower_bound(index + 1);
+    }
+
     size_t lower_bound3(size_t index, size_t border) {
         size_t current_index = table3.lower_bound(index >> bit3, (border >> bit3));
         if (current_index == (border >> bit3)) return border;
