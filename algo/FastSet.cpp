@@ -5,7 +5,7 @@ using namespace std;
 
 template<size_t Words>
 struct FastBitset : public _Base_bitset<Words> {
-    const static int bit = log2(sizeof(unsigned long) * 4);
+    const static int bit = log2(sizeof(unsigned long) * 8);
     FastBitset(unsigned long val = 0)
         : _Base_bitset<Words>(val)
     {
@@ -38,7 +38,7 @@ struct FastBitset : public _Base_bitset<Words> {
 
 template<int N>
 struct FastSet {
-    const static int bit = log2(sizeof(unsigned long) * 4);
+    const static int bit = log2(sizeof(unsigned long) * 8);
     const static int bit2 = bit * 2;
     const static int bit3 = bit * 3;
     const static size_t N0 = N + 2;
