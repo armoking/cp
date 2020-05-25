@@ -134,6 +134,20 @@ int main() {
         }
     }
 
+<<<<<<< HEAD
+=======
+    int q;
+    cin >> q;
+    vector<pair<int,int>> queries;
+    for (int i = 0; i < q; i++) {
+        int l, r;
+        cin >> l >> r;
+        l--, r--;
+        queries.push_back({l, r});
+    }
+
+    vector<vector<int>> data(n);
+>>>>>>> d76c30be62b0c09de323a9e9eea1b012aab9ccd7
     for (int i = 0; i < n; i++) {
         for (int j = 0; j < primes.size(); j++) {
             if (primes[j] * primes[j] > a[i]) {
@@ -149,6 +163,7 @@ int main() {
             data[i].push_back(a[i]);
         }
     }
+<<<<<<< HEAD
 
     SegmentTree tree(n);
     int q;
@@ -158,7 +173,20 @@ int main() {
         cin >> l >> r;
         l--, r--;
         ll ans = pref[r] * (l ? revpref[l - 1] : 1) % mod;
+=======
+    SegmentTree tree(n, data);
+
+    vector<ll> ans(q);
+    for (int i = 0; i < q; i++) {
+        auto& [l, r] = queries[i];
+        ans[i] = pref[r] * (l ? revpref[l - 1] : 1) % mod;
+
+>>>>>>> d76c30be62b0c09de323a9e9eea1b012aab9ccd7
         ll value = tree.Get(0, 0, n, l, r + 1);
         cout << (ans * value) % mod << '\n';
     }
+<<<<<<< HEAD
+=======
+
+>>>>>>> d76c30be62b0c09de323a9e9eea1b012aab9ccd7
 }

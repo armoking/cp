@@ -1,9 +1,9 @@
 #include <bits/stdc++.h>
 #define all(x) begin(x), end(x)
- 
+
 using namespace std;
 using ll = long long;
- 
+
 void InitIO(string name = "") {
     ios_base::sync_with_stdio(false);
     cin.tie(nullptr);
@@ -13,17 +13,17 @@ void InitIO(string name = "") {
         assert(freopen((name + ".out").c_str(), "w", stdout));
     }
 }
- 
+
 struct E {
     int t;
     char ch;
 };
- 
+
 const int N = 200200;
 vector<E> g[N];
 int depth[N];
 int depth2[N];
- 
+
 void bfs(int from, int depth[N]) {
     depth[from] = 0;
     queue<int> q;
@@ -39,7 +39,7 @@ void bfs(int from, int depth[N]) {
         }
     }
 }
- 
+
 int main() {
     InitIO();
     int n, m;
@@ -78,19 +78,19 @@ int main() {
             }
         }
         if (nxt.size() == 0) break;
- 
+
         while (nxt.begin()->first != prev(nxt.end())->first) nxt.erase(prev(nxt.end()));
         q.clear();
- 
+
         ans.push_back(nxt.begin()->first);
         for (auto& [ch, to] : nxt) {
             q.push_back(to);
             poss[to] = true;
         }
     }
- 
+
     cout << ans.size() << endl;
- 
+
     int cur = n - 1;
     vector<int> res = {cur};
     int itr = ans.size() - 1;
@@ -106,8 +106,8 @@ int main() {
     }
     reverse(all(res));
     for (int v : res) cout << v + 1 << ' ';
- 
+
     cout << endl;
- 
+
     cout << ans << endl;
 }

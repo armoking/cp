@@ -1,6 +1,6 @@
 #include <bits/stdc++.h>
 #define all(x) begin(x), end(x)
- 
+
 void InitIO(std::string name = "") {
     using namespace std;
     ios_base::sync_with_stdio(false);
@@ -11,13 +11,13 @@ void InitIO(std::string name = "") {
         assert(freopen((name + ".out").c_str(), "w", stdout));
     }
 }
- 
+
 using namespace std;
 using ll = long long;
- 
+
 vector<int> ans[200200];
 int itr = 0;
- 
+
 int main() {
     InitIO();
     int n, k;
@@ -28,7 +28,7 @@ int main() {
     for (int i = 0; i < k; i++) cin >> c[i];
     sort(all(arr));
     reverse(all(arr));
- 
+
     for (int val : arr) {
         int cnt = c[val - 1];
         bool exists = false;

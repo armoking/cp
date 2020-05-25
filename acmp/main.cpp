@@ -1,105 +1,45 @@
 #include <bits/stdc++.h>
 #define all(x) begin(x),end(x)
-#define size(x) int(x.size())
 
 using namespace std;
 using ll = long long;
 
-template<typename TKey, typename TValue, int TABLE_SIZE = 1024 /* should be power of two */,
-        int MAXN = 1024 /* max amount of elements */, TValue VALUE_BY_DEFAULT = 0>
-class THashMap {
+template<typename T>
+class TSparseTable {
 private:
-    std::pair<TKey, TValue> buffer[MAXN];
-    std::list<int> table[TABLE_SIZE];
-    std::vector<int> indexes;
-
-    int GetHash(const TKey& key) const {
-        return (key ^ (key << 5) ^ (key >> 7)) & (TABLE_SIZE - 1);
-    }
-
-    int GetFreeIndex() {
-        int index = indexes.back();
-        indexes.pop_back();
-        return index;
-    }
+    int n, p;
+    vector<vector<T>> table;
+    vector<int> lg2;
 public:
-    THashMap()
-        : indexes(MAXN)
-    {   
-        std::iota(std::begin(indexes), std::end(indexes), 0);
-        for (int i = 0; i < MAXN; i++) {
-            buffer[i].second = VALUE_BY_DEFAULT;
-        }
+    void Operation(T& ans, T& left, T& right) {
+        ans = max(left, right);
     }
 
-    bool contains(const TKey& key) const {
-        int h = GetHash(key);
-        for (int index : table[h]) {
-            if (buffer[index].first == key) {
-                return true;
+    TSparseTable(const vector<T>& arr)
+        : n(arr.size())
+        , p(log2(n + 1) + 1)
+        , table(p, vector<T>(n, 0))
+    {
+        table[0] = arr;
+        for (int d = 1; d < p; d++) {
+            int dlt = 1 << (d - 1);
+            for (int i = 0; i + dlt < n; i++) {
+                Operation(table[d][i], table[d - 1][i], table[d - 1][i + dlt]);
             }
         }
-        return false;
-    }
-
-    TValue& operator [] (const TKey& key) {
-        int h = GetHash(key);
-        for (int index : table[h]) {
-            if (buffer[index].first == key) {
-                return buffer[index].second;
-            }
+        lg2.resize(n + 1);
+        lg2[0] = -1;
+        for (int i = 1; i <= n; i++) {
+            lg2[i] = lg2[i >> 1] + 1;
         }
-        int index = GetFreeIndex();
-        buffer[index].first = key;
-        table[h].push_back(index);
-        return buffer[index].second;
     }
-
-    void put(const TKey& key, const TValue& value) {
-        (*this)[key] = value;
-    }
-
-    bool erase(const TKey& key) {
-        int h = GetHash(key);
-        auto it = std::begin(table[h]);
-        while (it != std::end(table[h])) {
-            if (buffer[*it].first == key) {
-                buffer[*it].second = VALUE_BY_DEFAULT;
-                indexes.push_back(*it);
-                table[h].erase(it);
-                return true;
-            }
-        }
-        return false;
-    }
-
-    bool insert(const TKey& key, const TValue& value) {
-        int h = GetHash(key);
-        for (int index : table[h]) {
-            if (buffer[index].first == key) {
-                if (buffer[index].second == value) {
-                    return false;
-                } else {
-                    buffer[index].second = value;
-                    return true;
-                }
-            }
-        }
-        int index = GetFreeIndex();
-        buffer[index].first = key;
-        buffer[index].second = value;
-        table[h].push_back(index);
-        return true;
-    }
-
-    std::vector<std::pair<TKey, TValue>> data() const {
-        std::vector<std::pair<TKey, TValue>> result;
-        for (int i = 0; i < TABLE_SIZE; i++) {
-            for (int index : table[i]) {
-                result.push_back(buffer[index]);
-            }
-        }
-        return result;
+    
+    T operator () (int l, int r) {
+        if (l > r) return 0;
+        int p = lg2[r - l + 1];
+        static T answer;
+        Operation(answer, table[p][l], table[p][r - (1 << p) + 1]);
+        return answer;
     }
 };
 
@@ -107,47 +47,13 @@ int main() {
     ios_base::sync_with_stdio(false);
     cin.tie(nullptr);
     cout.tie(nullptr);
-    int t;
-    cin >> t;
-    THashMap<int, int, 1 << 8, 8 << 10> hashMap;
-    while (t--) {
-        int n;
-        cin >> n;
-        vector<int> a(n);
-        for (int i = 0; i < n; i++) {
-            cin >> a[i];
+    const int n = 5;
+    vector<int> arr(n);
+    iota(all(arr), 1);
+    TSparseTable t(arr);
+    for (int i = 0; i < n; i++) {
+        for (int j = i; j < n; j++) {
+            cout << i << ' ' << j << ' ' << t(i, j) << endl;
         }
-
-        auto pref = a;
-        for (int i = 1; i < n; i++) {
-            pref[i] += pref[i - 1];
-        }
-
-        auto sum = [&] (int l, int r) {
-            return pref[r] - (l > 0 ? pref[l - 1] : 0);
-        };
-
-        int ans = 0;
-        for (int i = 0; i < n; i++) {
-            hashMap[a[i]]++;
-        }
-
-        for (int i = 0; i < n; i++) {
-            for (int j = i + 1; j < n; j++) {
-                int cur = sum(i, j);
-                if (cur <= n && hashMap.contains(cur)) {
-                    auto& val = hashMap[cur];
-                    ans += val;
-                    val = 0;
-                }
-            }
-        }
-
-        for (int i = 0; i < n; i++) {
-            hashMap.erase(a[i]);
-        }
-
-        cout << ans << '\n';
     }
-
 }

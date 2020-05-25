@@ -1,6 +1,6 @@
 #include <bits/stdc++.h>
 #define all(x) begin(x),end(x)
- 
+
 void InitIO(std::string name = "") {
     using namespace std;
     ios_base::sync_with_stdio(false);
@@ -11,21 +11,21 @@ void InitIO(std::string name = "") {
         freopen((name + ".out").c_str(), "w", stdout);
     }
 }
- 
+
 using namespace std;
- 
- 
- 
+
+
+
 void solve() {
     int n;
     cin >> n;
     vector<int> a(n);
     vector<int> pos(n);
     for (int i = 0; i < n; i++) cin >> a[i];
- 
+
     map<int, set<int>> mp;
     set<int> emp;
- 
+
     for (int i = 0; i < n; i++) {
         a[i]--;
         pos[a[i]] = i;
@@ -33,12 +33,12 @@ void solve() {
         emp.insert(i);
     }
     vector<int> cnt(n, 1);
- 
+
     bool possible = true;
- 
+
     for (int i = 0; i < n; i++) {
         int ind = pos[i];
- 
+
         if (!prev(mp.end())->second.count(ind)) {
             possible = false;
             break;
@@ -62,7 +62,7 @@ void solve() {
     }
     cout << (possible ? "Yes\n" : "No\n");
 }
- 
+
 int main() {
     InitIO("");
     int t;
